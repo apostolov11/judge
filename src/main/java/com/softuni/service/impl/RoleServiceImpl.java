@@ -1,9 +1,9 @@
-package com.softuni.model.service.impl;
+package com.softuni.service.impl;
 
 import com.softuni.model.entity.Role;
 import com.softuni.model.entity.RoleNameEnum;
-import com.softuni.model.repository.RoleRepository;
-import com.softuni.model.service.RoleService;
+import com.softuni.repository.RoleRepository;
+import com.softuni.service.RoleService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,5 +24,12 @@ public class RoleServiceImpl implements RoleService {
             roleRepository.save(admin);
             roleRepository.save(user);
         }
+    }
+
+    @Override
+    public Role findRole(RoleNameEnum roleNameEnum) {
+        return roleRepository
+                .findByName(roleNameEnum)
+                .orElse(null);
     }
 }

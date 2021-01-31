@@ -1,6 +1,6 @@
 package com.softuni.init;
 
-import com.softuni.model.service.RoleService;
+import com.softuni.service.RoleService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

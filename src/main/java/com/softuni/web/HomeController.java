@@ -1,4 +1,4 @@
-package com.softuni.model.web;
+package com.softuni.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
