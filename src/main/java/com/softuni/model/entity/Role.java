@@ -1,9 +1,6 @@
 package com.softuni.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
@@ -13,6 +10,10 @@ public class Role extends BaseEntity {
     private RoleNameEnum name;
 
     public Role() {
+    }
+
+    public Role(RoleNameEnum name) {
+        this.name = name;
     }
 
     public RoleNameEnum getName() {
