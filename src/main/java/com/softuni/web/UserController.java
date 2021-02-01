@@ -1,5 +1,6 @@
 package com.softuni.web;
 
+import com.softuni.model.biding.UserLoginBidingModel;
 import com.softuni.model.biding.UserRegisterBidingModel;
 import com.softuni.model.service.UserServiceModel;
 import com.softuni.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -28,8 +30,35 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        if (!model.containsAttribute("userLoginBidingModel")) {
+            model.addAttribute("userLoginBidingModel", new UserRegisterBidingModel());
+            model.addAttribute("notFound",false);
+        }
         return "login";
+    }
+
+    @PostMapping("/login")
+    public String loginConfirm(@Valid @ModelAttribute UserLoginBidingModel userLoginBidingModel,
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes,
+                               HttpSession httpSession) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("userLoginBidingModel",userLoginBidingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBidingModel",bindingResult);
+            return "redirect:login";
+        }
+
+        UserServiceModel user = userService.findUserByUsernameAndPassword(userLoginBidingModel.getUsername(),userLoginBidingModel.getPassword());
+
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("userLoginBidingModel",userLoginBidingModel);
+            redirectAttributes.addFlashAttribute("notFound",true);
+
+            return "redirect:login";
+        }
+        httpSession.setAttribute("user", user);
+        return "redirect:/";
     }
 
     @GetMapping("/register")
@@ -48,6 +77,7 @@ public class UserController {
 
         if (bindingResult.hasErrors() || !userRegisterBidingModel.getPassword().equals(userRegisterBidingModel.getConfirmPassword())) {
             redirectAttributes.addFlashAttribute("userRegisterBidingModel" , userRegisterBidingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBidingModel",bindingResult);
             return "redirect:register";
         }
 

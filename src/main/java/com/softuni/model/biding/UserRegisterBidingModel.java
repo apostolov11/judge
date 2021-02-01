@@ -23,6 +23,7 @@ public class UserRegisterBidingModel {
     public void setUsername(String username) {
         this.username = username;
     }
+
     @Length(min = 3,message = "Password length minimum three characters!")
     public String getPassword() {
         return password;
