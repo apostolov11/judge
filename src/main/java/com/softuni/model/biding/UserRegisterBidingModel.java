@@ -15,7 +15,7 @@ public class UserRegisterBidingModel {
     public UserRegisterBidingModel() {
     }
 
-    @Length(min = 2,message = "Username length minimum two characters!")
+    @Length(min = 2,message = "Username length must be minimum two characters!")
     public String getUsername() {
         return username;
     }
@@ -24,7 +24,7 @@ public class UserRegisterBidingModel {
         this.username = username;
     }
 
-    @Length(min = 3,message = "Password length minimum three characters!")
+    @Length(min = 3,message = "Password length must be minimum three characters!")
     public String getPassword() {
         return password;
     }

@@ -2,16 +2,16 @@ package com.softuni.model.biding;
 
 import org.hibernate.validator.constraints.Length;
 
-public class UserLoginBidingModel {
+public class UserLoginBindingModel {
 
     private String username;
 
     private String password;
 
-    public UserLoginBidingModel() {
+    public UserLoginBindingModel() {
     }
 
-    @Length(min = 2,message = "Username length minimum two characters!")
+    @Length(min = 2,message = "Username length must be minimum two characters!")
     public String getUsername() {
         return username;
     }
@@ -20,7 +20,7 @@ public class UserLoginBidingModel {
         this.username = username;
     }
 
-    @Length(min = 3,message = "Password length minimum three characters!")
+    @Length(min = 3,message = "Password length must be minimum three characters!")
     public String getPassword() {
         return password;
     }

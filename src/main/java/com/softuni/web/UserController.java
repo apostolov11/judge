@@ -1,6 +1,6 @@
 package com.softuni.web;
 
-import com.softuni.model.biding.UserLoginBidingModel;
+import com.softuni.model.biding.UserLoginBindingModel;
 import com.softuni.model.biding.UserRegisterBidingModel;
 import com.softuni.model.service.UserServiceModel;
 import com.softuni.service.UserService;
@@ -31,40 +31,44 @@ public class UserController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        if (!model.containsAttribute("userLoginBidingModel")) {
-            model.addAttribute("userLoginBidingModel", new UserRegisterBidingModel());
-            model.addAttribute("notFound",false);
+        if (!model.containsAttribute("userLoginBindingModel")) {
+            model.addAttribute("userLoginBindingModel", new UserLoginBindingModel());
+            model.addAttribute("notFound", false);
         }
         return "login";
     }
 
     @PostMapping("/login")
-    public String loginConfirm(@Valid @ModelAttribute UserLoginBidingModel userLoginBidingModel,
-                               BindingResult bindingResult,
-                               RedirectAttributes redirectAttributes,
-                               HttpSession httpSession) {
+    public String loginConfirm(@Valid @ModelAttribute UserLoginBindingModel userLoginBindingModel
+            , BindingResult bindingResult
+            , RedirectAttributes redirectAttributes
+            , HttpSession httpSession) {
+
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("userLoginBidingModel",userLoginBidingModel);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBidingModel",bindingResult);
+            redirectAttributes.addFlashAttribute("userLoginBindingModel", new UserRegisterBidingModel());
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userLoginBindingModel", bindingResult);
+
             return "redirect:login";
         }
 
-        UserServiceModel user = userService.findUserByUsernameAndPassword(userLoginBidingModel.getUsername(),userLoginBidingModel.getPassword());
+        UserServiceModel user = userService.findUserByUsernameAndPassword(userLoginBindingModel.getUsername(), userLoginBindingModel.getPassword());
 
         if (user == null) {
-            redirectAttributes.addFlashAttribute("userLoginBidingModel",userLoginBidingModel);
-            redirectAttributes.addFlashAttribute("notFound",true);
+            redirectAttributes.addFlashAttribute("userLoginBindingModel", new UserRegisterBidingModel());
+            redirectAttributes.addFlashAttribute("notFound", true);
 
             return "redirect:login";
         }
-        httpSession.setAttribute("user", user);
+//        httpSession.setAttribute("user", user);
+        userService.login(user);
+
         return "redirect:/";
     }
 
     @GetMapping("/register")
     public String register(Model model) {
         if (!model.containsAttribute("userRegisterBidingModel")) {
-            model.addAttribute("userRegisterBidingModel",new UserRegisterBidingModel());
+            model.addAttribute("userRegisterBidingModel", new UserRegisterBidingModel());
         }
 
         return "register";
@@ -76,15 +80,23 @@ public class UserController {
                                   RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors() || !userRegisterBidingModel.getPassword().equals(userRegisterBidingModel.getConfirmPassword())) {
-            redirectAttributes.addFlashAttribute("userRegisterBidingModel" , userRegisterBidingModel);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBidingModel",bindingResult);
+            redirectAttributes.addFlashAttribute("userRegisterBidingModel", userRegisterBidingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBidingModel", bindingResult);
             return "redirect:register";
         }
 
-        UserServiceModel userServiceModel = modelMapper.map(userRegisterBidingModel,UserServiceModel.class);
+        UserServiceModel userServiceModel = modelMapper.map(userRegisterBidingModel, UserServiceModel.class);
 
         userService.registerUser(userServiceModel);
 
         return "redirect:login";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+
+        userService.logout();
+
+        return "redirect:/";
     }
 }
