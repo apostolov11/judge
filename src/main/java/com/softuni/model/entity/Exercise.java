@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Table(name = "exercises")
 public class Exercise extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
 
     @Column(name = "started_on")
